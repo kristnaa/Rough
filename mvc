@@ -1,3 +1,4 @@
+
 Full Project Set up along with the code 
 
 
@@ -15,6 +16,8 @@ steps:
 
 -> in search icon find for the server -> click on create a new server -> 
 Apache folder-> select Tomcat 9 version , Add> Browse > select the folder path [ where bin folder available ]> click on next > Add Spring MVC > FINISH
+
+
 
 -> create a web mvc project with the following dependencies in pom.xml
 
@@ -74,7 +77,8 @@ Apache folder-> select Tomcat 9 version , Add> Browse > select the folder path [
        -> Now create foleder -> under 
 					src > main> webapp >
 				
-						  > WEB-INF > views   > .jsp files
+						  > WEB-INF > views   
+								-> .jsp files
 						            > web.xml
 							    > dispatcher-servlet.xml
 
@@ -136,7 +140,7 @@ Dispatcher-servlet.xml:
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.example.controller" />
+    <context:component-scan base-package="com.example.controller" />		  // Here Modify the package path as per your project
     
     <mvc:annotation-driven />
 
@@ -147,13 +151,9 @@ Dispatcher-servlet.xml:
 
 </beans>
 
+usage of above  bean definition of internal view resolver
+-------------------------------------------------------
 
-in dispacther.servlet.xml file.
------------------------------------
-
-it is going to construct the path for the view page name
-
-ex: hello.jsp
 
 
         <property name="prefix" value="/WEB-INF/views/" />
@@ -164,75 +164,107 @@ CONSTRUCT THE PATH FOR THE VIEW NAME:      /WEB-INF/views/index.jsp
 
 
 
+      Prefix        , suffix
+---------------      -------
+/WEB-INF/views/ index .jsp
+
+
+
 
 -> CREATE CONTROLLER CLASS:
 --------------------------
 
 
+Controller class 1:		it uses index.jsp page in views folder
+--------------------	
 
-package com.example.controller;
+package springwebmvc.java.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/home")
-public class HelloController {
+@RequestMapping("/controller1")
+public class FirstController {
 
-	@RequestMapping(value = "/welcome", method = RequestMethod.GET)
-	public ModelAndView welcomeOne() {
-		ModelAndView modelAndView = new ModelAndView("hello");
-		modelAndView.addObject("message", "welcome to SPRING WEB MVC from [[[METHODE --- 1]]");
-		return modelAndView;
+	@RequestMapping(value = "/one", method = RequestMethod.GET)
+	public ModelAndView FirstMethod() {
+		ModelAndView m1 = new ModelAndView();
+		m1.addObject("message", "data inserted using first Controller 1st method");
+		m1.setViewName("index");
+		return m1;
 	}
 
-	@GetMapping
-	public ModelAndView welcomeTwo() {
-		ModelAndView modelAndView = new ModelAndView("hello");
-		modelAndView.addObject("message", "HAIIIII welcome to SPRING WEB MVC PROJCT [METHODDE ----2 ");
-		return modelAndView;
-	}
 
-	@GetMapping("/three")
-	public ModelAndView welcomeThree() {
-		ModelAndView modelAndView = new ModelAndView("hello");
-		modelAndView.addObject("message", "HAIIIII welcome to SPRING WEB MVC PROJCT [ METHODE ----3");
-		return modelAndView;
-	}
-	
-	@GetMapping("/redirect")
-	public String redirect() {
-		return "redirect:/home";
-	}
-	
-	@GetMapping("/greet")
-	public String greet(Model model) {
+	@RequestMapping(value = "/two" , method = RequestMethod.GET)
+	public ModelAndView secondMethod() {
+		ModelAndView m2 = new ModelAndView();
 
-		model.addAttribute("message", "GREETING FROM SPRING MVC");
+		m2.addObject("message", "data inserted thorugh 1st Controller 2nd METHOD");
+		m2.setViewName("index");
 
-		return "hello";
+		return m2;
 	}
 
 }
 
 
+Controller class 2 : it uses frontpage.jsp page in views folder
+-------------------
+
+package springwebmvc.java.controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@RequestMapping("/controller2")
+public class SecondController {
+
+	@RequestMapping(value = "/getText", method = RequestMethod.GET)
+	public ModelAndView getString() {
+
+		ModelAndView m1 = new ModelAndView("frontpage");
+		m1.addObject("text", "SECOND CONTROLLER 1 st Method Executed");
+		// m1.setViewName("name of the view page");
+		return m1;
+	}
+	
+	@RequestMapping(value = "/getCollege", method = RequestMethod.GET)
+	public ModelAndView getCollegeName() {
+
+		ModelAndView m1 = new ModelAndView("frontpage");
+		m1.addObject("text", "GMRIT college");
+		return m1;
+	}
+	
+	@RequestMapping(value = "/getBranch", method = RequestMethod.GET)
+	public ModelAndView getBranchDetails() {
+
+		ModelAndView m1 = new ModelAndView("frontpage");
+		m1.addObject("text", "CIVIL Engeneering");
+		return m1;
+	}
+}
 
 
 
 ------------------------------------------
 
-cerate .jsp file in a new folders "WEB-INF> view > .jap file
+cerate .jsp file in a new folders "WEB-INF> views Folder > .jsp files
 
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+index.jsp
+----------
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello Page</title>
+    <title>Index page</title>
 </head>
 <body>
     <h1>${message}</h1>
@@ -240,49 +272,124 @@ cerate .jsp file in a new folders "WEB-INF> view > .jap file
 </html>
 
 
+frontpage.jsp
+---------------
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>frontpage</title>
+</head>
+<body>
+
+    <h1>${text}</h1>
+    
+</body>
+</html>
+
 
 -------------------------------------------------
 
+Now Right click on TomCat server -> Click on option called "Add or Remove..."  -> and Add the Existing mvc web project into server -> Finsih 
+ 
+-------------------------------------------------
 
-view resolver :
---------------------
+Now open the web browser and -> use the below URL's to access the Applications 
 
 
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/mvc
-           http://www.springframework.org/schema/mvc/spring-mvc.xsd
-           http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context.xsd">
+URL:   to access the application based on the Controller calsses end points
+-----
 
-    <context:component-scan base-package="com.example.controller" />
-    
-    <mvc:annotation-driven />
+http://localhost:8080/springwebmvc/controller1/one        // controller 1  > method  1 
 
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/" />
-        <property name="suffix" value=".jsp" />
-    </bean>
+http://localhost:8080/springwebmvc/controller1/two         // controller 1  > method  2 
 
-</beans>
+http://localhost:8080/springwebmvc/controller2/getText      // controller 2  > method  1 
+
+http://localhost:8080/springwebmvc/controller2/getCollege   // controller 2  > method  2
+
+http://localhost:8080/springwebmvc/controller2/getBranch    // controller 2  > method  3 
 
 
 
 
 
-      Prefix        , suffix
----------------      -------
-/WEB-INF/views/ index .jsp
 
 ---------------------------------------------------------------------
 
+Till now we configured using XML based configuration using   distathcer-servlet.xml -> [Both components scan and Internal view resolver]
 
-URL:
 
-localhost:8080/springwebmvc/mvc/one
+Now Comment all the dispather-servlet.xml code and try with Java configuration as below ...... 
+
+
+
+FOR JAVA CONFIGURATION :
+------------------------
+
+
+package springwebmvc.java.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+@EnableWebMvc
+@ComponentScan(basePackages = "springwebmvc.java.controllers")
+@Configuration
+public class JavaConfig {
+
+	 @Bean
+	    public InternalResourceViewResolver viewResolver() {
+	        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+	        resolver.setPrefix("/WEB-INF/views/");
+	        resolver.setSuffix(".jsp");
+	        return resolver;
+	    }
+}
+
+
+
+--
+
+Note:
+------
+add the following in web.xml to enable the configuration java features 
+
+inlcude the following meta data between ->     <servlet-class ..... / >   and  <load-on-startup...../>
+
+
+````````````add this 
+
+    <init-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </init-param>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>springmvc.com.config.WebConfig</param-value> <!-- Your Java config class -->
+    </init-param>
+
+
+run and test the application in web browser using tomcat server
+
+
+
+URI:
+-----
+
+http://localhost:8080/springwebmvc/controller1/one        // controller 1  > method  1 
+
+http://localhost:8080/springwebmvc/controller1/two         // controller 1  > method  2 
+
+http://localhost:8080/springwebmvc/controller2/getText      // controller 2  > method  1 
+
+http://localhost:8080/springwebmvc/controller2/getCollege   // controller 2  > method  2
+
+http://localhost:8080/springwebmvc/controller2/getBranch    // controller 2  > method  3 
+
+
+=========================================================================================
